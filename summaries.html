@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Distribution Platform Comparison</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font updated to include Montserrat (body) and Josefin Sans (title) -->
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Font changed to Montserrat */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background-color: #f7f9fb;
             color: #1f2937;
             padding: 20px;
+        }
+        /* Custom class for the main title font */
+        .title-font {
+            font-family: 'Josefin Sans', sans-serif;
         }
         .comparison-table th, .comparison-table td {
             padding: 1rem;
@@ -19,8 +25,9 @@
             border-bottom: 1px solid #e5e7eb;
         }
         .comparison-table th {
-            background-color: #eef2ff;
-            color: #4338ca;
+            /* Updated color to inspiring true blue: #1C6EAE */
+            background-color: #e8f3f8; /* Light blue background */
+            color: #1C6EAE; /* Inspiring true blue text */
             font-weight: 700;
             position: sticky;
             top: 0;
@@ -34,7 +41,8 @@
             color: #374151;
         }
         .category-header {
-            background-color: #1f2937;
+            /* Changed background-color to deep blue #1C6EAE */
+            background-color: #1C6EAE; 
             color: white;
             padding: 0.75rem 1rem;
             font-size: 1.25rem;
@@ -47,7 +55,8 @@
 <body>
 
 <div id="app" class="max-w-7xl mx-auto">
-    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 border-b pb-2">
+    <!-- Applied the 'title-font' class and adjusted weight to bold (700) -->
+    <h1 class="title-font text-4xl font-bold text-[#1C6EAE] mb-6 border-b pb-2">
         Film & Video Platform Comparison
     </h1>
     <p class="text-gray-600 mb-8">
@@ -66,29 +75,33 @@
     const platforms = [
         // --- DIRECT-TO-CONSUMER (D2C) PLATFORMS ---
         {
-            name: "Vimeo OTT (formerly VHX)",
+            name: "Vimeo OTT (Branded SVOD/TVOD Service)",
             category: "D2C Platforms",
-            focus: "Build your own branded subscription/rental streaming service.",
+            focus: "Build your own branded subscription/rental streaming service with custom apps.",
             monetization: "Subscription (SVOD), Transactional (TVOD), or Advertising (AVOD).",
-            cost: "Starts at $1/subscriber/month. Requires a separate Vimeo plan (starting $7/mo).",
+            tvodSpecifics: "TVOD (Rent/Buy) is a feature of your custom branded website/apps, using the 10% + 50¢ Vimeo revenue share model.",
+            cost: "Starts at $1/subscriber/month (SVOD) OR 10% + 50¢/transaction (TVOD). Requires a separate paid Vimeo plan.",
             features: "Custom apps (Apple TV, Roku, etc.), detailed analytics, live streaming, API access.",
-            bestFor: "Creators launching a dedicated brand with multiple content offerings and a subscriber base."
+            bestFor: "Creators launching a dedicated, multi-content brand (like a 'Netflix for X') with recurring subscribers."
         },
         {
-            name: "Uscreen",
+            name: "Vimeo On Demand (VOD) (Single Title)",
             category: "D2C Platforms",
-            focus: "Monetize content via subscription (SVOD) without needing to code.",
-            monetization: "Subscription (SVOD) and Transactional (TVOD).",
-            cost: "Plans start at $149/month + $1.20 per subscriber. Higher plans for custom apps.",
-            features: "Marketing tools, community features, custom branded apps, robust video player.",
-            bestFor: "Fitness, education, or specialized niche creators focused solely on recurring subscriptions."
+            focus: "Sell or rent individual films directly to consumers (TVOD) via a simple storefront.",
+            monetization: "Filmmaker keeps 90% of gross revenue after transaction fees (typically 4-17% of sale) and taxes.",
+            tvodSpecifics: "This platform IS the TVOD storefront. You set the price, and viewers rent or buy the title directly from Vimeo.",
+            cost: "Requires a paid Vimeo base plan (Starter or higher). No direct upfront platform fees on VOD sales.",
+            features: "Simple setup, customizable player embed, global reach, secure hosting.",
+            bestFor: "Filmmakers selling a single film or short who need an easy, reliable TVOD storefront."
         },
+        // Uscreen removed as requested
         {
             name: "Eventive",
             category: "D2C Platforms",
             focus: "Virtual and hybrid film festivals, theatrical releases, and specialty screenings.",
-            monetization: "Ticket sales, virtual festival passes, pay-per-view.",
-            cost: "Revenue share model (usually 10-15% of ticket sales) + platform/processing fees.",
+            monetization: "Ticket sales, virtual festival passes, pay-per-view. Organizers retain ticket price minus fees.",
+            tvodSpecifics: "A 'ticket' is a single-use purchase for a virtual screening within a specific availability window (the functional equivalent of TVOD).",
+            cost: "Ticketing: 5% + 99¢ per item (often passed to customer). Virtual: $0.99 DRM unlock fee per stream. Setup: $299 (Single Film) or $975/year (Unlimited Virtual).",
             features: "Geoblocking, secure windowed DRM, live Q&A integration, ticketing management.",
             bestFor: "Film festivals, community screenings, and time-bound virtual events requiring high security."
         },
@@ -97,6 +110,7 @@
             category: "D2C Platforms",
             focus: "Community-driven group screenings and virtual watch parties.",
             monetization: "Ticket sales for hosted group events (virtual and physical).",
+            tvodSpecifics: "Tickets are sold for a specific, scheduled group screening event, not typical on-demand playback.",
             cost: "Revenue share model, typically 25-30% of ticket sales.",
             features: "Host-led Q&A/discussion tools, integrated Zoom/Webinar features, simplified licensing.",
             bestFor: "Filmmakers wanting to use films for education, social impact, or facilitated discussions."
@@ -106,6 +120,7 @@
             category: "D2C Platforms",
             focus: "Theatrical-on-Demand (ToD) distribution for limited, audience-driven cinema runs.",
             monetization: "Ticket sales for theatrical screenings.",
+            tvodSpecifics: "Theatrical-on-Demand (ToD) only. Not a traditional digital rental platform.",
             cost: "Fees vary based on agreement; focuses on risk-free, pre-sold events.",
             features: "Event promotion, booking logistics, theatrical distribution coordination.",
             bestFor: "Filmmakers seeking limited, successful theatrical engagement without a traditional distributor."
@@ -116,7 +131,8 @@
             name: "Quiver Digital",
             category: "Digital Aggregators",
             focus: "B2B delivery agent for major transactional and subscription platforms (Apple TV, Amazon, Vudu, etc.).",
-            monetization: "Filmmaker keeps **100% of the platform's net revenue**.",
+            monetization: "Filmmaker keeps <span class=\"font-bold text-green-700\">100%</span> of the platform's net revenue.",
+            tvodSpecifics: "Aggregator role: You keep 100% of the revenue paid by the retail platform (Apple/Amazon/etc.) for TVOD sales, after their retail fee.",
             cost: "Upfront flat fee (e.g., $1395 for first retailer, $225 per additional retailer for features).",
             features: "Certified delivery for major platforms, quality control (QC), no backend revenue split.",
             bestFor: "Filmmakers with budget for upfront fees who want to retain all backend profit and control platform selection."
@@ -126,6 +142,7 @@
             category: "Digital Aggregators",
             focus: "Full-service digital supply chain, QC, and localization for premium content.",
             monetization: "100% revenue retention on TVOD, 90% retention on AVOD/SVOD (after platform cut).",
+            tvodSpecifics: "Aggregator role: You keep 100% of the revenue paid by the retail platform (Apple/Amazon/etc.) for TVOD sales, after their retail fee.",
             cost: "High upfront fee (starting around $2,198 for QC + 1st platform delivery) + cost of subtitles/localization.",
             features: "Advanced QC tiers, localization (subtitles, dubbing), dedicated production coordinator.",
             bestFor: "High-budget, professional productions needing guaranteed technical compliance and full-service post-production/delivery."
@@ -134,8 +151,9 @@
             name: "Filmhub",
             category: "Digital Aggregators",
             focus: "A content marketplace that algorithmically licenses films to 100s of global VOD channels (Tubi, Pluto, Hulu, etc.).",
-            monetization: "Filmmaker keeps **80% of net revenue**.",
-            cost: "Free basic upload. Paid tiers ($100-$200/month) for priority QC and dedicated support.",
+            monetization: "Filmmaker keeps <span class=\"font-bold text-orange-600\">80%</span> of net revenue.",
+            tvodSpecifics: "Aggregator role: Focuses mainly on licensing to subscription/ad-supported services (SVOD/AVOD), less on single-title TVOD.",
+            cost: "<span class=\"font-bold text-green-700\">Free</span> basic upload. Paid tiers ($100-$200/month) for priority QC and dedicated support.",
             features: "AI-driven licensing, global AVOD/SVOD reach, real-time dashboard tracking, no upfront delivery fees.",
             bestFor: "Filmmakers with zero upfront budget who want maximum, passive global reach on ad-supported platforms (AVOD) and are comfortable with a revenue split."
         }
@@ -151,6 +169,7 @@
             { key: 'name', label: 'Platform' },
             { key: 'focus', label: 'Primary Focus' },
             { key: 'monetization', label: 'Monetization / Split' },
+            { key: 'tvodSpecifics', label: 'TVOD (Single Rental) Model' }, 
             { key: 'cost', label: 'Cost / Fees' },
             { key: 'features', label: 'Key Features' },
             { key: 'bestFor', label: 'Best For' }
@@ -186,20 +205,24 @@
                 if (header.key === 'bestFor') {
                     cssClass = 'best-for';
                 }
+                
+                // Re-apply highlighting after retrieving the content
                 if (header.key === 'monetization') {
-                    // Highlight key revenue splits
                     if (content.includes('100%')) {
                          content = content.replace('100%', '<span class="font-bold text-green-700">100%</span>');
+                    } else if (content.includes('90%')) {
+                         content = content.replace('90%', '<span class="font-bold text-green-700">90%</span>');
                     } else if (content.includes('80%')) {
                          content = content.replace('80%', '<span class="font-bold text-orange-600">80%</span>');
                     }
                 }
                 if (header.key === 'cost') {
-                    // Highlight key fees
                     if (content.includes('Free')) {
                          content = content.replace('Free', '<span class="font-bold text-green-700">Free</span>');
                     } else if (content.includes('Upfront flat fee')) {
                          content = content.replace('Upfront flat fee', '<span class="font-bold text-red-600">Upfront flat fee</span>');
+                    } else if (content.includes('High upfront fee')) {
+                         content = content.replace('High upfront fee', '<span class="font-bold text-red-600">High upfront fee</span>');
                     }
                 }
 
