@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Distribution Platform Comparison Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Updated: Using Montserrat font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Updated: Setting Montserrat as the primary font */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f7fafc;
+        }
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        /* Custom styling for desktop table view */
+        @media (min-width: 1024px) {
+            .comparison-table td {
+                vertical-align: top;
+                padding: 1rem 0.75rem;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            .comparison-table th {
+                white-space: nowrap;
+            }
+        }
+        .text-feature {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <!-- Updated: text color to blue-700 -->
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-700 mb-2">
+                Video Distribution Platform Comparison
+            </h1>
+            <p class="text-gray-600 text-lg">
+                Compare top platforms for VOD, Subscriptions, and Community Screenings.
+            </p>
+        </header>
+
+        <!-- Filter and Search Area -->
+        <div class="bg-white p-6 rounded-xl shadow-lg mb-8 flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
+            <!-- Updated: focus colors to blue-500 -->
+            <input type="text" id="searchInput" onkeyup="filterPlatforms()" placeholder="Search by feature, focus, or name..."
+                   class="w-full lg:w-1/3 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm">
+            
+            <div class="w-full lg:w-2/3 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                <!-- Updated: button colors to blue-600/blue-700 -->
+                <button onclick="sortPlatforms('name')" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-sm">
+                    Sort by Name (A-Z)
+                </button>
+                <button onclick="sortPlatforms('focus')" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-sm">
+                    Sort by Primary Focus
+                </button>
+                <button onclick="viewMode('cards')" id="cardViewBtn" class="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition duration-150 shadow-md text-sm lg:hidden">
+                    Card View
+                </button>
+                <button onclick="viewMode('table')" id="tableViewBtn" class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-150 shadow-md text-sm hidden lg:block">
+                    Table View (Desktop)
+                </button>
+            </div>
+        </div>
+        
+        <!-- Comparison Output Area -->
+        <div id="comparisonOutput">
+            <!-- Content will be rendered here by JavaScript -->
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA DEFINITION ---
+        const platforms = [
+            {
+                name: "Vimeo On Demand (VOD)",
+                focus: "Transactional VOD & Direct-to-Consumer Sales",
+                monetization: "TVOD (Rental/Purchase) & SVOD (Subscription via Vimeo OTT)",
+                cost: "Monthly hosting plan required (starts low, scales up). Creator keeps 90% of sales after standard payment processing fees.",
+                features: [
+                    "High revenue share (90%)",
+                    "Customizable video player",
+                    "Integrated marketing tools (promo codes, gifting)",
+                    "Global distribution and geoblocking",
+                    "Audience analytics and data ownership"
+                ],
+                bestFor: "Filmmakers selling individual titles directly, professional content creators leveraging Vimeo's quality and brand."
+            },
+            {
+                name: "Uscreen",
+                focus: "Subscription Video On Demand (SVOD) & OTT App Building",
+                monetization: "SVOD (Recurring Subscriptions) and TVOD (One-time sales/rentals)",
+                cost: "Starts at ~$149/month (billed annually) + $1.99 per subscriber per month. TVOD fee of 5%. Pricing scales up for mobile/TV apps.",
+                features: [
+                    "White-labeled branding and dedicated website",
+                    "Branded Mobile and TV Apps (OTT) available",
+                    "Built-in marketing, analytics, and community tools",
+                    "Membership/subscription management",
+                    "Netflix-style video catalog"
+                ],
+                bestFor: "Businesses, educators, and creators focused on building a dedicated, branded, recurring subscription business (like a 'Netflix for X')."
+            },
+            {
+                name: "Eventive",
+                focus: "Virtual Cinemas, Hybrid Film Festivals, & Event Screenings",
+                monetization: "Ticketing/Pass sales, Donations, Memberships.",
+                cost: "~$975 USD annual activation fee + variable fees per transaction/unlock (e.g., $0.99 per DRM unlock + 5% + $0.99 platform fee on paid orders).",
+                features: [
+                    "DRM-protected video security",
+                    "Geoblocking and capacity limits",
+                    "Integrated ticketing and pass system",
+                    "Native TV apps (Apple TV, Roku, Fire TV)",
+                    "Live Q&A and secure audience chat"
+                ],
+                bestFor: "Film festivals, arthouse cinemas, and distributors needing high-security, date-and-time restricted, event-based screenings."
+            },
+            {
+                name: "Kinema",
+                focus: "Community-Driven & Non-Theatrical Screening Tours",
+                monetization: "Licensing fees (paid by host) and Revenue Share (Ticket sales). TVOD ('Watch Now' Rentals).",
+                cost: "Annual per-film fee (e.g., $108/yr) or higher upfront fee, plus standard CC fees + small platform fee per rental.",
+                features: [
+                    "Screening Tour Operating System",
+                    "Pay What You Wish pricing (for VOD rentals)",
+                    "Synchronized live streaming with chat/Q&A",
+                    "Secure Offline Cinema Player for in-person events",
+                    "Flexible licensing tiers"
+                ],
+                bestFor: "Filmmakers focused on community engagement, educational outreach, and managing hosted, guided screening tours (both virtual and in-person)."
+            },
+            {
+                name: "Gathr",
+                focus: "Theatrical On Demand, Event Management, and Impact Campaigns",
+                monetization: "TVOD (Rent/Purchase), Donations, Merch Sales, Theatrical Crowdfunding.",
+                cost: "Platform is free upfront; primary revenue is likely via service fees/commissions on transactions and bookings.",
+                features: [
+                    "Theatrical On Demand (crowdfunding cinema screenings)",
+                    "Talent Booking and Merch Sales tools",
+                    "Partner VOD self-distribution network",
+                    "Geo-fencing and content availability control",
+                    "Live Virtual Screenings/Webinars"
+                ],
+                bestFor: "Documentarians, experts, and creators looking to build large-scale events and impact campaigns around their content, bridging virtual and physical screenings."
+            }
+        ];
+
+        let currentData = [...platforms];
+        let currentSort = 'name';
+        let currentView = window.innerWidth >= 1024 ? 'table' : 'cards';
+
+        // --- RENDERING FUNCTIONS ---
+
+        function renderCards(data) {
+            return data.map(p => `
+                <div class="card bg-white p-6 rounded-xl shadow-md border border-gray-200 mb-6 flex flex-col">
+                    <!-- Updated: text color to blue-700 -->
+                    <h2 class="text-xl font-bold text-blue-700 mb-4 border-b pb-2">${p.name}</h2>
+                    
+                    <div class="space-y-4 flex-grow">
+                        <div>
+                            <p class="font-semibold text-gray-700">Primary Focus</p>
+                            <!-- Updated: text color to blue-600 -->
+                            <p class="text-feature text-blue-600">${p.focus}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Monetization Model</p>
+                            <p class="text-feature">${p.monetization}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Cost/Fees Summary</p>
+                            <p class="text-feature">${p.cost}</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Special Features</p>
+                            <ul class="list-disc list-inside text-feature space-y-0.5 ml-2">
+                                ${p.features.map(f => `<li>${f}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Best For...</p>
+                            <!-- Updated: background color to blue-50 -->
+                            <p class="text-feature bg-blue-50 p-2 rounded-lg">${p.bestFor}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTable(data) {
+            return `
+                <div class="overflow-x-auto bg-white rounded-xl shadow-lg border border-gray-200">
+                    <!-- Updated: table header background to blue-50 -->
+                    <table class="min-w-full comparison-table divide-y divide-gray-200">
+                        <thead class="bg-blue-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl">Platform</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Primary Focus</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monetization Model</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cost/Fees Summary</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Special Features</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">Best For...</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            ${data.map(p => `
+                                <tr>
+                                    <!-- Updated: text color to blue-700 -->
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-blue-700">${p.name}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">${p.focus}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">${p.monetization}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">${p.cost}</td>
+                                    <td class="px-6 py-4 text-sm text-gray-700">
+                                        <ul class="list-disc list-inside space-y-1">
+                                            ${p.features.map(f => `<li>${f}</li>`).join('')}
+                                        </ul>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-800">${p.bestFor}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        // --- INTERACTIVITY FUNCTIONS ---
+
+        function updateOutput() {
+            const outputElement = document.getElementById('comparisonOutput');
+            if (currentView === 'cards' || window.innerWidth < 1024) {
+                // Render as cards for mobile or if explicitly requested
+                outputElement.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+                outputElement.innerHTML = renderCards(currentData);
+            } else {
+                // Render as a table for desktop
+                outputElement.className = '';
+                outputElement.innerHTML = renderTable(currentData);
+            }
+        }
+
+        function sortPlatforms(key) {
+            currentSort = key;
+            currentData.sort((a, b) => {
+                let valA = a[key].toLowerCase();
+                let valB = b[key].toLowerCase();
+                if (valA < valB) return -1;
+                if (valA > valB) return 1;
+                return 0;
+            });
+            filterPlatforms(document.getElementById('searchInput').value); // Re-render with current filter
+        }
+
+        function filterPlatforms(query = document.getElementById('searchInput').value) {
+            const lowerCaseQuery = query.toLowerCase().trim();
+            
+            currentData = platforms.filter(p => {
+                if (!lowerCaseQuery) return true;
+                
+                // Check name, focus, monetization, and bestFor fields
+                const textToSearch = [
+                    p.name,
+                    p.focus,
+                    p.monetization,
+                    p.bestFor,
+                    p.cost,
+                    ...p.features
+                ].join(' ').toLowerCase();
+
+                return textToSearch.includes(lowerCaseQuery);
+            });
+            
+            // Re-apply current sorting to the filtered results
+            if (currentSort) {
+                currentData.sort((a, b) => {
+                    let valA = a[currentSort].toLowerCase();
+                    let valB = b[key].toLowerCase();
+                    if (valA < valB) return -1;
+                    if (valA > valB) return 1;
+                    return 0;
+                });
+            }
+            
+            updateOutput();
+        }
+
+        function viewMode(mode) {
+            currentView = mode;
+            // Update button styles (optional but good practice)
+            const cardBtn = document.getElementById('cardViewBtn');
+            const tableBtn = document.getElementById('tableViewBtn');
+            const primaryBtnClass = 'bg-blue-600 text-white hover:bg-blue-700'; // Updated
+            const secondaryBtnClass = 'bg-gray-200 text-gray-800 hover:bg-gray-300';
+
+            // Find all sort buttons and reset their color
+            document.querySelectorAll('button[onclick^="sortPlatforms"]').forEach(btn => {
+                btn.className = btn.className.replace(/bg-.*?-600/, primaryBtnClass.match(/bg-.*?-600/)[0]).replace(/hover:bg-.*?-700/, primaryBtnClass.match(/hover:bg-.*?-700/)[0]);
+            });
+
+
+            if (mode === 'cards') {
+                // Ensure the card view button is styled as primary when active
+                cardBtn.classList.remove(...secondaryBtnClass.split(' '));
+                cardBtn.classList.add(...primaryBtnClass.split(' '));
+                
+                // Ensure the table view button is styled as secondary when inactive (on desktop only)
+                if (tableBtn) {
+                     tableBtn.classList.remove(...primaryBtnClass.split(' '));
+                     tableBtn.classList.add(...secondaryBtnClass.split(' '));
+                }
+            } else {
+                // Ensure the table view button is styled as primary when active
+                tableBtn.classList.remove(...secondaryBtnClass.split(' '));
+                tableBtn.classList.add(...primaryBtnClass.split(' '));
+
+                // Ensure the card view button is styled as secondary when inactive (on mobile only)
+                if (cardBtn) {
+                    cardBtn.classList.remove(...primaryBtnClass.split(' '));
+                    cardBtn.classList.add(...secondaryBtnClass.split(' '));
+                }
+            }
+
+            updateOutput();
+        }
+
+        // Initial setup on load
+        window.onload = () => {
+            // Check initial screen size and set view mode accordingly
+            if (window.innerWidth < 1024) {
+                currentView = 'cards';
+                // Show only the card button on small screens for simplicity
+                document.getElementById('tableViewBtn').classList.add('hidden');
+                document.getElementById('cardViewBtn').classList.remove('hidden');
+            } else {
+                currentView = 'table';
+                document.getElementById('tableViewBtn').classList.remove('hidden');
+                document.getElementById('cardViewBtn').classList.add('hidden');
+            }
+            
+            // Set initial state for the table/card view buttons
+            viewMode(currentView);
+
+            // Re-initialize sort buttons to the new color scheme
+            document.querySelectorAll('button[onclick^="sortPlatforms"]').forEach(btn => {
+                // These are always active/primary color
+                btn.classList.remove('bg-indigo-500', 'hover:bg-indigo-600');
+                btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            });
+
+
+            sortPlatforms('name'); // Initial sort and render
+        };
+
+        window.onresize = () => {
+            // Automatically switch view if screen size crosses the LG breakpoint
+            const newView = window.innerWidth >= 1024 ? 'table' : 'cards';
+            if (newView !== currentView) {
+                currentView = newView;
+                viewMode(newView);
+                updateOutput();
+            }
+
+            // Manage button visibility on resize
+            if (window.innerWidth < 1024) {
+                document.getElementById('tableViewBtn').classList.add('hidden');
+                document.getElementById('cardViewBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('tableViewBtn').classList.remove('hidden');
+                document.getElementById('cardViewBtn').classList.add('hidden');
+            }
+        };
+
+    </script>
+</body>
+</html>
