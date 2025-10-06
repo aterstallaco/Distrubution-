@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Distribution Platform Comparison</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+            color: #1f2937;
+            padding: 20px;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .comparison-table th {
+            background-color: #eef2ff;
+            color: #4338ca;
+            font-weight: 700;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .comparison-table tr:hover {
+            background-color: #f3f4f6;
+        }
+        .best-for {
+            font-size: 0.85rem;
+            color: #374151;
+        }
+        .category-header {
+            background-color: #1f2937;
+            color: white;
+            padding: 0.75rem 1rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-extrabold text-gray-900 mb-6 border-b pb-2">
+        Film & Video Platform Comparison
+    </h1>
+    <p class="text-gray-600 mb-8">
+        A detailed look at Direct-to-Consumer (D2C) distribution and Digital Aggregator models.
+    </p>
+
+    <!-- Table Container -->
+    <div class="bg-white shadow-xl rounded-xl overflow-hidden">
+        <div id="table-container" class="overflow-x-auto">
+            <!-- Table will be rendered here by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const platforms = [
+        // --- DIRECT-TO-CONSUMER (D2C) PLATFORMS ---
+        {
+            name: "Vimeo OTT (formerly VHX)",
+            category: "D2C Platforms",
+            focus: "Build your own branded subscription/rental streaming service.",
+            monetization: "Subscription (SVOD), Transactional (TVOD), or Advertising (AVOD).",
+            cost: "Starts at $1/subscriber/month. Requires a separate Vimeo plan (starting $7/mo).",
+            features: "Custom apps (Apple TV, Roku, etc.), detailed analytics, live streaming, API access.",
+            bestFor: "Creators launching a dedicated brand with multiple content offerings and a subscriber base."
+        },
+        {
+            name: "Uscreen",
+            category: "D2C Platforms",
+            focus: "Monetize content via subscription (SVOD) without needing to code.",
+            monetization: "Subscription (SVOD) and Transactional (TVOD).",
+            cost: "Plans start at $149/month + $1.20 per subscriber. Higher plans for custom apps.",
+            features: "Marketing tools, community features, custom branded apps, robust video player.",
+            bestFor: "Fitness, education, or specialized niche creators focused solely on recurring subscriptions."
+        },
+        {
+            name: "Eventive",
+            category: "D2C Platforms",
+            focus: "Virtual and hybrid film festivals, theatrical releases, and specialty screenings.",
+            monetization: "Ticket sales, virtual festival passes, pay-per-view.",
+            cost: "Revenue share model (usually 10-15% of ticket sales) + platform/processing fees.",
+            features: "Geoblocking, secure windowed DRM, live Q&A integration, ticketing management.",
+            bestFor: "Film festivals, community screenings, and time-bound virtual events requiring high security."
+        },
+        {
+            name: "Kinema",
+            category: "D2C Platforms",
+            focus: "Community-driven group screenings and virtual watch parties.",
+            monetization: "Ticket sales for hosted group events (virtual and physical).",
+            cost: "Revenue share model, typically 25-30% of ticket sales.",
+            features: "Host-led Q&A/discussion tools, integrated Zoom/Webinar features, simplified licensing.",
+            bestFor: "Filmmakers wanting to use films for education, social impact, or facilitated discussions."
+        },
+        {
+            name: "Gathr Films",
+            category: "D2C Platforms",
+            focus: "Theatrical-on-Demand (ToD) distribution for limited, audience-driven cinema runs.",
+            monetization: "Ticket sales for theatrical screenings.",
+            cost: "Fees vary based on agreement; focuses on risk-free, pre-sold events.",
+            features: "Event promotion, booking logistics, theatrical distribution coordination.",
+            bestFor: "Filmmakers seeking limited, successful theatrical engagement without a traditional distributor."
+        },
+
+        // --- DIGITAL AGGREGATORS ---
+        {
+            name: "Quiver Digital",
+            category: "Digital Aggregators",
+            focus: "B2B delivery agent for major transactional and subscription platforms (Apple TV, Amazon, Vudu, etc.).",
+            monetization: "Filmmaker keeps **100% of the platform's net revenue**.",
+            cost: "Upfront flat fee (e.g., $1395 for first retailer, $225 per additional retailer for features).",
+            features: "Certified delivery for major platforms, quality control (QC), no backend revenue split.",
+            bestFor: "Filmmakers with budget for upfront fees who want to retain all backend profit and control platform selection."
+        },
+        {
+            name: "Bitmax",
+            category: "Digital Aggregators",
+            focus: "Full-service digital supply chain, QC, and localization for premium content.",
+            monetization: "100% revenue retention on TVOD, 90% retention on AVOD/SVOD (after platform cut).",
+            cost: "High upfront fee (starting around $2,198 for QC + 1st platform delivery) + cost of subtitles/localization.",
+            features: "Advanced QC tiers, localization (subtitles, dubbing), dedicated production coordinator.",
+            bestFor: "High-budget, professional productions needing guaranteed technical compliance and full-service post-production/delivery."
+        },
+        {
+            name: "Filmhub",
+            category: "Digital Aggregators",
+            focus: "A content marketplace that algorithmically licenses films to 100s of global VOD channels (Tubi, Pluto, Hulu, etc.).",
+            monetization: "Filmmaker keeps **80% of net revenue**.",
+            cost: "Free basic upload. Paid tiers ($100-$200/month) for priority QC and dedicated support.",
+            features: "AI-driven licensing, global AVOD/SVOD reach, real-time dashboard tracking, no upfront delivery fees.",
+            bestFor: "Filmmakers with zero upfront budget who want maximum, passive global reach on ad-supported platforms (AVOD) and are comfortable with a revenue split."
+        }
+    ];
+
+    function renderTable() {
+        const tableContainer = document.getElementById('table-container');
+        let html = '';
+        let currentCategory = "";
+
+        // Define generic headers for all types
+        const headers = [
+            { key: 'name', label: 'Platform' },
+            { key: 'focus', label: 'Primary Focus' },
+            { key: 'monetization', label: 'Monetization / Split' },
+            { key: 'cost', label: 'Cost / Fees' },
+            { key: 'features', label: 'Key Features' },
+            { key: 'bestFor', label: 'Best For' }
+        ];
+
+        platforms.forEach(platform => {
+            if (platform.category !== currentCategory) {
+                // Close previous table if it exists
+                if (currentCategory !== "") {
+                    html += '</tbody></table>';
+                }
+
+                // New category header
+                html += `<div class="category-header">${platform.category}</div>`;
+
+                // Start new table
+                html += '<table class="comparison-table w-full border-collapse">';
+                html += '<thead><tr>';
+                headers.forEach(header => {
+                    html += `<th class="text-xs uppercase tracking-wider">${header.label}</th>`;
+                });
+                html += '</tr></thead><tbody>';
+
+                currentCategory = platform.category;
+            }
+
+            // Table row
+            html += '<tr class="transition duration-150">';
+            headers.forEach(header => {
+                let content = platform[header.key];
+                let cssClass = '';
+
+                if (header.key === 'bestFor') {
+                    cssClass = 'best-for';
+                }
+                if (header.key === 'monetization') {
+                    // Highlight key revenue splits
+                    if (content.includes('100%')) {
+                         content = content.replace('100%', '<span class="font-bold text-green-700">100%</span>');
+                    } else if (content.includes('80%')) {
+                         content = content.replace('80%', '<span class="font-bold text-orange-600">80%</span>');
+                    }
+                }
+                if (header.key === 'cost') {
+                    // Highlight key fees
+                    if (content.includes('Free')) {
+                         content = content.replace('Free', '<span class="font-bold text-green-700">Free</span>');
+                    } else if (content.includes('Upfront flat fee')) {
+                         content = content.replace('Upfront flat fee', '<span class="font-bold text-red-600">Upfront flat fee</span>');
+                    }
+                }
+
+                html += `<td class="${cssClass}">${content}</td>`;
+            });
+            html += '</tr>';
+        });
+
+        // Close the final table
+        html += '</tbody></table>';
+        tableContainer.innerHTML = html;
+    }
+
+    // Initialize the table rendering
+    window.onload = renderTable;
+</script>
+
+</body>
+</html>
